@@ -1,0 +1,41 @@
+========================================
+  Black Smart Controller - 开发环境说明
+========================================
+
+一、需要安装的软件
+  1. Arduino IDE（推荐 2.x 版本）
+     下载地址：https://www.arduino.cc/en/software
+
+二、需要安装的开发板支持（二选一）
+  ESP8266：
+    Arduino IDE → 文件 → 首选项 → 附加开发板管理器网址，添加：
+    https://arduino.esp8266.com/stable/package_esp8266com_index.json
+    然后：工具 → 开发板 → 开发板管理器 → 搜索 "esp8266" → 安装
+
+  ESP32：
+    Arduino IDE → 文件 → 首选项 → 附加开发板管理器网址，添加：
+    https://espressif.github.io/arduino-esp32/package_esp32_index.json
+    然后：工具 → 开发板 → 开发板管理器 → 搜索 "esp32" → 安装
+
+三、需要安装的第三方库
+  库管理器路径：工具 → 管理库
+
+  1. DHT sensor library（作者：Adafruit）
+     搜索：DHT sensor library
+     安装时提示安装依赖，选择 Install All
+
+  2. Adafruit Unified Sensor（作者：Adafruit）
+     搜索：Adafruit Unified Sensor
+     （如果安装 DHT sensor library 时已自动安装，此步可跳过）
+
+四、打开项目
+  用 Arduino IDE 打开 WiFi______ 文件夹中的 WiFi______.ino 即可。
+  IDE 会自动加载同目录下的所有 .h 文件。
+
+五、编译与烧录
+  1. 选择对应开发板（工具 → 开发板 → ESP8266/ESP32）
+  2. 选择端口
+  3. 点击上传（→ 箭头）
+
+六、项目文件说明
+  详见 项目文件说明.txt

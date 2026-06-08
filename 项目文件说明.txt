@@ -1,0 +1,101 @@
+====================================
+  智能书桌控制器 - 项目文件说明
+====================================
+
+本项目的代码按功能拆分为多个文件，便于阅读和维护。
+每个文件负责一个独立的功能模块。
+
+
+WiFi______.ino    主程序入口（177行）
+
+  Arduino 的启动文件，相当于程序的"总控台"。
+  包含 setup()（初始化）和 loop()（主循环）两个核心函数。
+  所有其他文件的功能在这里被统一调用。
+
+
+config.h    全局配置（150行）
+
+  所有常量定义、引脚编号、枚举类型、全局变量声明都在这里。
+  比如：DHT11接哪个引脚、按键接哪个引脚、WiFi密码等。
+  修改硬件接线后只需改这一个文件。
+
+
+buzzer.h    蜂鸣器控制（82行）
+
+  控制蜂鸣器发出不同模式的提示音。
+  - playBuzzerPattern() 播放指定模式
+  - updateBuzzer() 持续更新蜂鸣器状态
+  有5种蜂鸣模式：短响、长响、快响、慢响、结束提示等。
+
+
+controls.h    设备控制核心（255行）
+
+  这是最核心的文件，负责：
+  - checkSwitch()  检测物理按键的按下/松开
+  - checkTimer()   倒计时管理（每个功能独立计时）
+  - checkTimerSwitch()  检测定时调节旋钮档位
+  - controlOutputs()  根据计时状态控制继电器输出
+
+  功能的"开→计时中→关闭"全流程在这里处理。
+
+
+sensor.h    传感器模块（176行）
+
+  负责 DHT11 温湿度传感器的读写：
+  - readDhtSensorRobust()  容错读取（失败自动重试）
+  - updateTemperatureHumidity()  自动温湿度控制逻辑
+
+  这是唯一与硬件传感器直接交互的文件。
+
+
+utils.h    辅助工具（187行）
+
+  通用辅助函数集合：
+  - isAnyDeviceRunning()   检查是否有设备在运行
+  - printStatus()    串口打印当前所有状态
+  - updateD5Led()    更新状态指示灯
+  - checkAutoEndBeep()    设备结束时的提示音
+  - getDeviceStatusIcon()   返回设备状态图标
+
+
+html_page.h    网页界面（181行）
+
+  WiFi 控制页面的 HTML 代码。连接设备热点后，
+  手机浏览器打开 192.168.4.1 看到的就是这个文件生成的页面。
+  包含：设备开关按钮、定时设置、温湿度显示等。
+
+
+web.h    网络服务（135行）
+
+  负责 WiFi 热点创建和网页请求处理：
+  - createWiFiAP()   创建 WiFi 热点
+  - handleRoot()     处理首页访问
+  - handleControl()  处理按钮点击（开/关设备）
+  - handleNotFound() 处理无效页面请求
+
+
+
+调用关系
+
+  WiFi______.ino （主程序）
+      |
+      +-- config.h    被所有文件引用
+      +-- buzzer.h    蜂鸣器基础模块
+      +-- utils.h     辅助函数（调用 buzzer）
+      +-- controls.h  设备控制（调用 buzzer、utils）
+      +-- sensor.h    传感器（调用 buzzer）
+      +-- html_page.h 网页生成（调用 controls、sensor）
+      +-- web.h       WiFi服务（调用所有模块）
+
+
+阅读顺序
+
+建议按以下顺序阅读代码：
+  1. config.h     → 先看懂有哪些硬件和参数
+  2. buzzer.h     → 最简单的模块，了解代码风格
+  3. utils.h      → 辅助工具，了解程序状态表示方法
+  4. controls.h   → 核心逻辑，重点理解按键→计时的流程
+  5. sensor.h     → 传感器，了解温湿度采集与自动控制
+  6. html_page.h  → 网页界面，纯字符串拼接
+  7. web.h        → 网络服务，HTTP请求处理
+  8. WiFi______.ino → 最后看主程序，把所有模块串联起来
